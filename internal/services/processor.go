@@ -4,8 +4,8 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/Heatdog/VkML/cmd/processor/internal/models"
-	"github.com/Heatdog/VkML/cmd/processor/internal/storage"
+	"github.com/Heatdog/VkML/internal/models"
+	"github.com/Heatdog/VkML/internal/storage"
 )
 
 type DocumentsProcessor struct {

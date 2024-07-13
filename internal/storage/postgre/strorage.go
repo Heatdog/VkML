@@ -5,8 +5,8 @@ import (
 	"errors"
 	"log/slog"
 
-	"github.com/Heatdog/VkML/cmd/processor/internal/models"
-	"github.com/Heatdog/VkML/cmd/processor/internal/storage"
+	"github.com/Heatdog/VkML/internal/models"
+	"github.com/Heatdog/VkML/internal/storage"
 	"github.com/Heatdog/VkML/pkg/storage/postgre"
 )
 
@@ -30,7 +30,7 @@ func (storage *Storage) Add(ctx context.Context, doc *models.Document) error {
 		VALUES ($1, $2, $3, $4)
 	`
 
-	storage.logger.Debug("document", doc)
+	storage.logger.Debug("document", slog.Any("doc", doc))
 	tag, err := storage.client.Exec(ctx, q, doc.URL, doc.PubDate, doc.FetchTime, doc.Text)
 	if err != nil {
 		storage.logger.Warn("error", err.Error())

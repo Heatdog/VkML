@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 
-	"github.com/Heatdog/VkML/cmd/processor/internal/models"
+	"github.com/Heatdog/VkML/internal/models"
 )
 
 type Storage interface {
