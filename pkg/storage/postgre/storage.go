@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func NewPostgreClient(ctx context.Context, cfg Config) (Storage, error) {
+func NewPostgreClient(ctx context.Context, cfg Config) (Client, error) {
 	time.Sleep(time.Duration(cfg.TimePrepare) * time.Second)
 	dsn := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
 
