@@ -11,12 +11,14 @@ import (
 type DocumentsProcessor struct {
 	logger  *slog.Logger
 	storage storage.Storage
+	cache   storage.Storage
 }
 
-func New(storage storage.Storage, logger *slog.Logger) Processor {
+func New(storage storage.Storage, cache storage.Storage, logger *slog.Logger) Processor {
 	return &DocumentsProcessor{
 		storage: storage,
 		logger:  logger,
+		cache:   cache,
 	}
 }
 
@@ -30,19 +32,31 @@ func (processor *DocumentsProcessor) Process(d *models.Document) (*models.Docume
 		return nil, err
 	}
 
-	minDoc, err := processor.storage.GetByFetchTimeMin(ctx, d.URL)
-	if err != nil {
+	if err := processor.cache.Add(ctx, d); err != nil {
 		processor.logger.Warn(err.Error())
 		return nil, err
+	}
+
+	minDoc, err := processor.cache.GetByFetchTimeMin(ctx, d.URL)
+
+	if err != nil {
+		minDoc, err = processor.storage.GetByFetchTimeMin(ctx, d.URL)
+		if err != nil {
+			processor.logger.Warn(err.Error())
+			return nil, err
+		}
 	}
 
 	d.PubDate = minDoc.PubDate
 	d.FirstFetchTime = minDoc.FetchTime
 
-	maxDoc, err := processor.storage.GetByFetchTimeMax(ctx, d.URL)
+	maxDoc, err := processor.cache.GetByFetchTimeMax(ctx, d.URL)
 	if err != nil {
-		processor.logger.Warn(err.Error())
-		return nil, err
+		maxDoc, err = processor.storage.GetByFetchTimeMax(ctx, d.URL)
+		if err != nil {
+			processor.logger.Warn(err.Error())
+			return nil, err
+		}
 	}
 
 	d.Text = maxDoc.Text

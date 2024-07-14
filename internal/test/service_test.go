@@ -9,6 +9,7 @@ import (
 	"github.com/Heatdog/VkML/internal/models"
 	"github.com/Heatdog/VkML/internal/services"
 	"github.com/Heatdog/VkML/internal/storage/postgre"
+	"github.com/Heatdog/VkML/internal/storage/redis"
 	"github.com/pashagolub/pgxmock/v3"
 	"github.com/stretchr/testify/require"
 )
@@ -28,7 +29,8 @@ func TestProcess(t *testing.T) {
 	slog.SetDefault(logger)
 
 	storage := postgre.New(dbMock, logger)
-	documentProcess := services.New(storage, logger)
+	cache := redis.New()
+	documentProcess := services.New(storage, cache, logger)
 
 	type mockBehavior func(inDocument models.Document, outDocument *models.Document, err error)
 

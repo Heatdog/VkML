@@ -7,7 +7,7 @@ import (
 
 	"github.com/Heatdog/VkML/internal/models"
 	"github.com/Heatdog/VkML/internal/storage"
-	"github.com/Heatdog/VkML/pkg/storage/postgre"
+	"github.com/Heatdog/VkML/pkg/client/postgre"
 )
 
 type Storage struct {
